@@ -14,9 +14,4 @@ public class Feed {
     final String copyright;
     final String pubDate;
     final List<FeedMessage> messages = new ArrayList<>();
-    public String toString() {
-        return "Feed [copyright=" + copyright + ", description=" + description
-                + ", language=" + language + ", link=" + link + ", pubDate="
-                + pubDate + ", title=" + title + "]";
-    }
 }

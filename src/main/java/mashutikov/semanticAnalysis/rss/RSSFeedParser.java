@@ -7,10 +7,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
-import javax.xml.stream.XMLEventReader;
-import javax.xml.stream.XMLInputFactory;
-import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.*;
 import javax.xml.stream.events.Characters;
 import javax.xml.stream.events.XMLEvent;
 
@@ -54,61 +54,79 @@ public class RSSFeedParser {
             XMLInputFactory inputFactory = XMLInputFactory.newInstance();
             // Setup a new eventReader
             InputStream in = read();
-            XMLEventReader eventReader = inputFactory.createXMLEventReader(in);
+            XMLStreamReader streamReader = inputFactory.createXMLStreamReader(in);
             // read the XML document
-            while (eventReader.hasNext()) {
-                XMLEvent event = eventReader.nextEvent();
-                if (event.isStartElement()) {
-                    String localPart = event.asStartElement().getName()
-                            .getLocalPart();
-                    switch (localPart) {
-                        case ITEM:
-                            if (isFeedHeader) {
-                                isFeedHeader = false;
-                                feed = new Feed(title, link, description, language,
-                                        copyright, pubdate);
-                            }
-                            event = eventReader.nextEvent();
-                            break;
-                        case TITLE:
-                            title = getCharacterData(event, eventReader);
-                            break;
-                        case DESCRIPTION:
-                            description = getCharacterData(event, eventReader);
-                            break;
-                        case LINK:
-                            link = getCharacterData(event, eventReader);
-                            break;
-                        case GUID:
-                            guid = getCharacterData(event, eventReader);
-                            break;
-                        case LANGUAGE:
-                            language = getCharacterData(event, eventReader);
-                            break;
-                        case AUTHOR:
-                            author = getCharacterData(event, eventReader);
-                            break;
-                        case PUB_DATE:
-                            pubdate = getCharacterData(event, eventReader);
-                            break;
-                        case COPYRIGHT:
-                            copyright = getCharacterData(event, eventReader);
-                            break;
-                    }
-                } else if (event.isEndElement()) {
-                    if (event.asEndElement().getName().getLocalPart() == (ITEM)) {
-                        FeedMessage message = new FeedMessage();
-                        message.setAuthor(author);
-                        message.setDescription(description);
-                        message.setGuid(guid);
-                        message.setLink(link);
-                        message.setTitle(title);
-                        feed.getMessages().add(message);
-                        event = eventReader.nextEvent();
-                        continue;
-                    }
+            String tagEndName = "";
+            String tagName = "";
+            String tagContent = "";
+            Boolean istagEnd;
+            List<FeedMessage> newsList = new ArrayList<>();
+            while (streamReader.hasNext()) {
+                istagEnd = false;
+                switch (streamReader.getEventType()) {
+                    case XMLStreamConstants.CHARACTERS:
+                    case XMLStreamConstants.CDATA:
+                        if(streamReader.getText().trim().length() > 0) {
+                            tagContent = streamReader.getText();
+                        }
+                        break;
+                    case XMLStreamConstants.START_ELEMENT:
+                        tagName = streamReader.getLocalName();
+                        tagContent = "";
+                        break;
+                    case XMLStreamConstants.END_ELEMENT:
+                        tagEndName = streamReader.getLocalName();
+                        istagEnd = true;
+                        break;
+                    default:
+                        break;
                 }
+                if(ITEM.equals(tagName) && isFeedHeader) {
+                        isFeedHeader = false;
+                        feed = new Feed(title, link, description, language,
+                                copyright, pubdate);
+
+                }
+                 if(istagEnd) {
+                     switch (tagEndName) {
+                         case TITLE:
+                             title = tagContent;
+                             break;
+                         case DESCRIPTION:
+                             description = tagContent;
+                             break;
+                         case LINK:
+                             link = tagContent;
+                             break;
+                         case GUID:
+                             guid = tagContent;
+                             break;
+                         case LANGUAGE:
+                             language = tagContent;
+                             break;
+                         case AUTHOR:
+                             author = tagContent;
+                             break;
+                         case PUB_DATE:
+                             pubdate = tagContent;
+                             break;
+                         case COPYRIGHT:
+                             copyright = tagContent;
+                             break;
+                     }
+                     if (ITEM.equals(tagEndName)) {
+                         FeedMessage message = new FeedMessage();
+                         message.setAuthor(author);
+                         message.setDescription(description);
+                         message.setGuid(guid);
+                         message.setLink(link);
+                         message.setTitle(title);
+                         newsList.add(message);
+                     }
+                 }
+                streamReader.next();
             }
+            feed.getMessages().addAll(newsList);
         } catch (XMLStreamException e) {
             throw new RuntimeException(e);
         }
