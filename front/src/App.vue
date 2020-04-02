@@ -1,5 +1,7 @@
 <template>
-  <router-view ></router-view>
+  <div class="app-container">
+    <router-view ></router-view>
+  </div>
 </template>
 
 <script>
@@ -13,5 +15,9 @@
 </script>
 
 <style lang="scss" scoped>
+  .app-container{
+    display: flex;
+    justify-content: center;
+  }
 
 </style>

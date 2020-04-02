@@ -20,10 +20,10 @@ const
 	requireService = require.context('./service', false, /.service.js$/),
 	instance = axios.create({
 		baseURL: `http://localhost:4040`,
-		responseType: 'json',	
 		headers: {
-			'Content-sadasdsadsadsadsasadas': 'application/json'
+			'Content-Type': 'application/json'
 		},
+		withCredentials: true
 	})
 
 

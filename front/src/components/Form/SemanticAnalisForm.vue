@@ -11,7 +11,7 @@
         <a-input
             v-model="domain.value"
             placeholder="введите сылку на RSS ленты новостей"
-            style="width: 60%; margin-right: 8px"
+            style="width: 100%;"
         />
         <a-icon
             v-if="dynamicValidateForm.URLs.length > 1"
@@ -22,12 +22,16 @@
         />
         </a-form-model-item>
         <a-form-model-item>
-        <a-button type="dashed" style="width: 60%" @click="addURL">
+        <a-button type="dashed" style="width: 100%" @click="addURL">
             <a-icon type="plus" /> Добавить источник
         </a-button>
         </a-form-model-item>
         <a-form-model-item>
-        <a-button type="primary" html-type="submit" @click="submitForm('dynamicValidateForm')">
+        <a-button 
+          :loading="false"
+          type="primary" 
+          html-type="submit" 
+          @click="submitForm('dynamicValidateForm')">
             Загрузить новости
         </a-button>
         <a-button style="margin-left: 10px" @click="resetForm('dynamicValidateForm')">
@@ -57,8 +61,8 @@ export default {
         let vm = this
         vm.$refs[formName].validate(valid => {
         if (valid) {
-            vm.$api.common.getNews(vm.dynamicValidateForm.URLs.map(url => url.value)).then(({data}) => {
-                alert('submit!', data);
+            vm.$api.common.getNews({ urls : vm.dynamicValidateForm.URLs.map(url => url.value)}).then(({data}) => {
+                this.$emit('news-fetched', data)
             })
             
         } else {
@@ -85,7 +89,7 @@ export default {
   },
 };
 </script>
-<style>
+<style lang="scss" scoped>
 .dynamic-delete-button {
   cursor: pointer;
   position: relative;
@@ -93,12 +97,19 @@ export default {
   font-size: 24px;
   color: #999;
   transition: all 0.3s;
-}
-.dynamic-delete-button:hover {
-  color: #777;
+  &:hover {
+    color: #777;
+  }
 }
 .dynamic-delete-button[disabled] {
   cursor: not-allowed;
   opacity: 0.5;
 }
+/deep/ .ant-form-item-children {
+  display: flex;
+  .ant-input +.anticon {
+    margin-left: 8px;
+  }
+}
+
 </style>

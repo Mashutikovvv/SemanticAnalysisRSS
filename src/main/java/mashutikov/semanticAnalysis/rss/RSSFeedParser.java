@@ -67,7 +67,7 @@ public class RSSFeedParser {
                     case XMLStreamConstants.CHARACTERS:
                     case XMLStreamConstants.CDATA:
                         if(streamReader.getText().trim().length() > 0) {
-                            tagContent = streamReader.getText();
+                            tagContent += streamReader.getText();
                         }
                         break;
                     case XMLStreamConstants.START_ELEMENT:
