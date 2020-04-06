@@ -6,7 +6,7 @@
                 <a slot="title" :href="item.link">{{item.title}}</a>       
             </a-list-item-meta>
         </a-list-item>
-  </a-list>
+  </a-list>  
 </template>
 
 <script>

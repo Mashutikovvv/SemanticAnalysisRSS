@@ -5,6 +5,13 @@
         @news-fetched="newsFetched"/>    
     </a-card>
     <a-card class="main-view-card">
+      <a-button 
+          :loading="false"
+          type="primary" 
+          html-type="submit" 
+          @click="getAnalysis">
+            Анализ
+      </a-button>
       <NewsList :news="news"/>
     </a-card>
   </div>
@@ -20,6 +27,10 @@ export default {
   methods: {   
     newsFetched(news) {
       this.news = news
+    },
+    getAnalysis(){
+      this.$api.common.getAnalysis({ news : this.news}).then(({data}) => {
+    })
     }
   },
 };

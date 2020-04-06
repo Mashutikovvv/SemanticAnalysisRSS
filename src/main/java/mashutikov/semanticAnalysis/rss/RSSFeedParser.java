@@ -59,10 +59,10 @@ public class RSSFeedParser {
             String tagEndName = "";
             String tagName = "";
             String tagContent = "";
-            Boolean istagEnd;
+            Boolean isTagEnd;
             List<FeedMessage> newsList = new ArrayList<>();
             while (streamReader.hasNext()) {
-                istagEnd = false;
+                isTagEnd = false;
                 switch (streamReader.getEventType()) {
                     case XMLStreamConstants.CHARACTERS:
                     case XMLStreamConstants.CDATA:
@@ -76,7 +76,7 @@ public class RSSFeedParser {
                         break;
                     case XMLStreamConstants.END_ELEMENT:
                         tagEndName = streamReader.getLocalName();
-                        istagEnd = true;
+                        isTagEnd = true;
                         break;
                     default:
                         break;
@@ -87,7 +87,7 @@ public class RSSFeedParser {
                                 copyright, pubdate);
 
                 }
-                 if(istagEnd) {
+                 if(isTagEnd) {
                      switch (tagEndName) {
                          case TITLE:
                              title = tagContent;

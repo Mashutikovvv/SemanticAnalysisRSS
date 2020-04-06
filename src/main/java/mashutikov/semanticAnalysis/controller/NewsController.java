@@ -1,6 +1,8 @@
 package mashutikov.semanticAnalysis.controller;
 
 import lombok.RequiredArgsConstructor;
+import mashutikov.semanticAnalysis.analyzer.Analyzer;
+import mashutikov.semanticAnalysis.dto.NewsAnalysisDto;
 import mashutikov.semanticAnalysis.dto.ResourcesDto;
 import mashutikov.semanticAnalysis.model.FeedMessage;
 import mashutikov.semanticAnalysis.service.NewsFetcher;
@@ -23,6 +25,12 @@ public class NewsController {
     @PostMapping("/fetchNews")
     public List<FeedMessage> fetchNews(@RequestBody ResourcesDto dto) {
         return fetcher.fetchNews(dto.getUrls());
+    }
+    @PostMapping("/getAnalysis")
+    public List<FeedMessage> getAnalysis(@RequestBody NewsAnalysisDto dto) {
+        Analyzer analyzer = new Analyzer(dto.getNews());
+        System.out.println(analyzer.executeAnalysis());
+        return null;
     }
 
 }
