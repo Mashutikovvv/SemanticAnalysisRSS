@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class Analyzer {
 
@@ -26,8 +27,9 @@ public class Analyzer {
 
     public List<AnalyzedNews> executeAnalysis() {
         for (AnalyzedNews item: news) {
-            for (String word: item.getDescription()) {
-                System.out.println(stemmer.stem(word));
+            for (int i = 0; i < item.getDescription().size(); i++) {
+                stemmer.stem(item.getDescription().get(i));
+                item.getDescription().set(i, stemmer.stem(item.getDescription().get(i)));
             }
         }
         return news;
