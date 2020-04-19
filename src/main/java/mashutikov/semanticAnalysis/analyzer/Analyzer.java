@@ -2,37 +2,33 @@ package mashutikov.semanticAnalysis.analyzer;
 
 import mashutikov.semanticAnalysis.model.AnalyzedNews;
 import mashutikov.semanticAnalysis.model.FeedMessage;
+import mashutikov.semanticAnalysis.model.Terms;
 import mashutikov.semanticAnalysis.service.PorterStemmer;
+import mashutikov.semanticAnalysis.service.TermsPreparator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
+@Service
 public class Analyzer {
 
-    private List<AnalyzedNews> news;
+    private List<AnalyzedNews> analyzedNews = new ArrayList<>();
 
+    private Terms commonSetTerms  = new Terms();
 
-    private PorterStemmer stemmer = new PorterStemmer();
-
-    public Analyzer(List<FeedMessage> news) {
-        this.news = new ArrayList<>();
+    public List<AnalyzedNews> executeAnalysis(List<FeedMessage> news) {
         for (FeedMessage item: news) {
-            this.news.add(new AnalyzedNews(item));
+            this.analyzedNews.add(new AnalyzedNews(item));
         }
-
-    }
-
-    public List<AnalyzedNews> executeAnalysis() {
-        for (AnalyzedNews item: news) {
-            for (int i = 0; i < item.getDescription().size(); i++) {
-                stemmer.stem(item.getDescription().get(i));
-                item.getDescription().set(i, stemmer.stem(item.getDescription().get(i)));
+        for (AnalyzedNews item: analyzedNews) {
+            for (String word : item.getTerms().keySet()) {
+                commonSetTerms.addTerm(word);
             }
         }
-        return news;
+        System.out.println(commonSetTerms);
+        return analyzedNews;
     }
 
 }

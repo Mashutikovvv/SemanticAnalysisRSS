@@ -75,7 +75,6 @@ public class PorterStemmer {
             word = pre + rv;
 
         }
-        word = word.replaceAll("\\pP", "");
-        return word;
+        return word.replaceAll("\\p{P}", "");
     }
 }

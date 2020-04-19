@@ -21,6 +21,8 @@ public class NewsController {
 
     @Autowired
     private NewsFetcher fetcher;
+    @Autowired
+    private Analyzer analyzer;
 
     @PostMapping("/fetchNews")
     public List<FeedMessage> fetchNews(@RequestBody ResourcesDto dto) {
@@ -28,8 +30,7 @@ public class NewsController {
     }
     @PostMapping("/getAnalysis")
     public List<FeedMessage> getAnalysis(@RequestBody NewsAnalysisDto dto) {
-        Analyzer analyzer = new Analyzer(dto.getNews());
-        System.out.println(analyzer.executeAnalysis());
+        System.out.println(analyzer.executeAnalysis(dto.getNews()));
         return null;
     }
 
