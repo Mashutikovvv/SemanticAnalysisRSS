@@ -27,5 +27,10 @@ public class AnalyzedNews {
     public Map<String, Integer> getTerms(){
         return terms.getTerms();
     }
-
+    public void setTerms(Map<String, Integer> terms){
+         this.terms.setTerms(terms);
+    }
+    public String toString() {
+        return "AnalyzedNews(title=" + this.getTitle() + ", terms=" + this.getTerms() + ")"+ "\n";
+    }
 }

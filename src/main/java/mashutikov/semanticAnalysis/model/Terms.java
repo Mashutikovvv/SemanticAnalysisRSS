@@ -18,6 +18,7 @@ public class Terms {
             terms.put(term, newValue);
         }
     }
+
     public int size(){
         return terms.size();
     }
