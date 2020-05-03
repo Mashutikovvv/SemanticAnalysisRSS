@@ -1,7 +1,8 @@
 package mashutikov.semanticAnalysis.service;
 
 import mashutikov.semanticAnalysis.model.FeedMessage;
-import mashutikov.semanticAnalysis.rss.RSSFeedParser;
+import mashutikov.semanticAnalysis.service.apiClient.ApiClient;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -9,12 +10,14 @@ import java.util.List;
 
 @Service
 public class NewsFetcher {
-    public List<FeedMessage> fetchNews(List<String> urls) {
-        List<FeedMessage>  newsList = new ArrayList<>();
-        for (String url: urls) {
-            RSSFeedParser parser = new RSSFeedParser(url);
-            newsList.addAll(parser.readFeed().getMessages());
-        }
+
+    private static final String[] SOURCES = {"google-news-ru", "lenta", "rbc", "rt"};
+    @Autowired
+    private ApiClient apiClient;
+
+    public List<FeedMessage> fetchNews() {
+        List<FeedMessage>  newsList;
+        newsList = apiClient.getNews(SOURCES).getArticles();
         return newsList;
     }
 }

@@ -7,11 +7,6 @@ import java.util.List;
 
 @Data
 public class Feed {
-    final String title;
-    final String link;
-    final String description;
-    final String language;
-    final String copyright;
-    final String pubDate;
-    final List<FeedMessage> messages = new ArrayList<>();
+    private int totalResults;
+    private List<FeedMessage> articles = new ArrayList<>();
 }

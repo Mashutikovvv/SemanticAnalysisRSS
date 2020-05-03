@@ -32,17 +32,12 @@ public class Analyzer {
                 .stream()
                 .filter(term -> term.getValue() > 1)
                 .collect(Collectors.toMap(term -> term.getKey(), term -> term.getValue())));
-        System.out.println(commonSetTerms.getTerms());
-        System.out.println("ДО____________________________");
-        System.out.println(analyzedNews);
         for (AnalyzedNews item: analyzedNews) {
             item.setTerms(item.getTerms().entrySet()
                     .stream()
                     .filter(term -> commonSetTerms.getTerms().get(term.getKey()) != null)
                     .collect(Collectors.toMap(term -> term.getKey(), term -> term.getValue())));
         }
-        System.out.println("ПОСЛЕ____________________________");
-        System.out.println(analyzedNews);
         return analyzedNews;
     }
 

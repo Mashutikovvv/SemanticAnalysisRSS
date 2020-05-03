@@ -6,7 +6,6 @@ import lombok.Data;
 public class FeedMessage {
     String title;
     String description;
-    String link;
+    String url;
     String author;
-    String guid;
 }

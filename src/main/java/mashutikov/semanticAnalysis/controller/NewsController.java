@@ -26,7 +26,7 @@ public class NewsController {
 
     @PostMapping("/fetchNews")
     public List<FeedMessage> fetchNews(@RequestBody ResourcesDto dto) {
-        return fetcher.fetchNews(dto.getUrls());
+        return fetcher.fetchNews();
     }
     @PostMapping("/getAnalysis")
     public List<FeedMessage> getAnalysis(@RequestBody NewsAnalysisDto dto) {
