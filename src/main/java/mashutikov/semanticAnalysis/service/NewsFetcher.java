@@ -12,12 +12,15 @@ import java.util.List;
 public class NewsFetcher {
 
     private static final String[] SOURCES = {"google-news-ru", "lenta", "rbc", "rt"};
+    private static final String RUS_LANG = "ru";
     @Autowired
     private ApiClient apiClient;
 
     public List<FeedMessage> fetchNews() {
         List<FeedMessage>  newsList;
-        newsList = apiClient.getNews(SOURCES).getArticles();
+        newsList = new ArrayList<>();
+        newsList.addAll(apiClient.getNews(SOURCES, RUS_LANG).getArticles());
+
         return newsList;
     }
 }

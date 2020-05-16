@@ -1,14 +1,13 @@
 package mashutikov.semanticAnalysis.service;
 
 import mashutikov.semanticAnalysis.model.Terms;
-import org.springframework.stereotype.Service;
 
 public class TermsPreparator {
     private Terms terms = new Terms();
     private PorterStemmer stemmer = new PorterStemmer();
     private static final String[] STOP_WORDS = {
             "-", "еще", "него", "сказать",
-            "ж", "нее", "со",
+            "ж", "нее", "со", "об",
             "без", "же", "ней",	"совсем",
             "более", "жизнь", "нельзя",	"так",
             "больше", "за",	"нет", "такой",
@@ -51,9 +50,12 @@ public class TermsPreparator {
             "есть",	"не", "сказала"
     };
     public void addTerm(String term) {
-        if(isValidWord(term)){
+        if(isValidWord(term.toLowerCase())){
             String tempTerm =  stemmer.stem(term);
-            terms.addTerm(tempTerm);
+            if(!isDigit(tempTerm)) {
+                terms.addTerm(tempTerm);
+            }
+
         }
     }
     public boolean isValidWord(String term) {
@@ -65,6 +67,14 @@ public class TermsPreparator {
             }
             return true;
         } else {
+            return false;
+        }
+    }
+    private static boolean isDigit(String s) throws NumberFormatException {
+        try {
+            Integer.parseInt(s);
+            return true;
+        } catch (NumberFormatException e) {
             return false;
         }
     }

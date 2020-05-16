@@ -6,6 +6,7 @@ import mashutikov.semanticAnalysis.dto.NewsAnalysisDto;
 import mashutikov.semanticAnalysis.dto.ResourcesDto;
 import mashutikov.semanticAnalysis.model.FeedMessage;
 import mashutikov.semanticAnalysis.service.NewsFetcher;
+import mashutikov.semanticAnalysis.model.chart.Charts;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -29,9 +30,8 @@ public class NewsController {
         return fetcher.fetchNews();
     }
     @PostMapping("/getAnalysis")
-    public List<FeedMessage> getAnalysis(@RequestBody NewsAnalysisDto dto) {
-        System.out.println(analyzer.executeAnalysis(dto.getNews()));
-        return null;
+    public Charts getAnalysis(@RequestBody NewsAnalysisDto dto) {
+        return analyzer.executeAnalysis(dto.getNews());
     }
 
 }

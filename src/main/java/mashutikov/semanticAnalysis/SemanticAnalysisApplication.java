@@ -10,6 +10,7 @@ public class SemanticAnalysisApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(SemanticAnalysisApplication.class, args);
+
 	}
 
 }
