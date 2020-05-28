@@ -1,9 +1,9 @@
 <template>
-    <a-list itemLayout="horizontal" :dataSource="news" :locale="locale">
+    <a-list itemLayout="horizontal" :dataSource="news" :locale="locale" :pagination="true">
         <a-list-item slot="renderItem" slot-scope="item, index">
             <a-list-item-meta
                 :description="item.description">
-                <a slot="title" :href="item.link">{{item.title}}</a>       
+                <a slot="title" :href="item.url">{{item.title}}</a>       
             </a-list-item-meta>
         </a-list-item>
   </a-list>  

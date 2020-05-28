@@ -1,37 +1,13 @@
 <template>
-    <a-form-model
-        ref="dynamicValidateForm"
-        :model="dynamicValidateForm">
-        <a-form-model-item
-            v-for="(domain, index) in dynamicValidateForm.URLs"
-            :key="domain.key"           
-            :label="index === 0 ? 'Источники новостей' : ''"
-            :prop="'URLs.' + index + '.value'"
-            :rules="rules">
-        <a-input
-            v-model="domain.value"
-            placeholder="введите сылку на RSS ленты новостей"
-            style="width: 100%;"
-        />
-        <a-icon
-            v-if="dynamicValidateForm.URLs.length > 1"
-            class="dynamic-delete-button"
-            type="minus-circle-o"
-            :disabled="dynamicValidateForm.URLs.length === 1"
-            @click="removeURL(domain)"
-        />
-        </a-form-model-item>
-        <a-form-model-item>
-        <a-button type="dashed" style="width: 100%" @click="addURL">
-            <a-icon type="plus" /> Добавить источник
-        </a-button>
-        </a-form-model-item>
+    <a-form-model>
+        <a-week-picker placeholder="Выберите неделю" v-model="weekDate" @change="onChange" />  
+        <a-input-search placeholder="Ключевое слово" style="width: 200px" v-model="model.q"/>  
         <a-form-model-item>
         <a-button 
           :loading="false"
           type="primary" 
           html-type="submit" 
-          @click="submitForm('dynamicValidateForm')">
+          @click="submit()">
             Загрузить новости
         </a-button>
         <a-button style="margin-left: 10px" @click="resetForm('dynamicValidateForm')">
@@ -45,46 +21,26 @@
 let id = 0;
 export default {
   data() {
-    return {      
-      dynamicValidateForm: {
-        URLs: [],
-      },
-      rules: {
-            required: true,
-            message: 'Поле обязательно для заполнения',
-            trigger: 'blur',
-        }
+    return {
+      model: {
+        q: "",
+        from: "",
+        to: "",
+      },      
+      weekDate: null,    
     };
   },
   methods: {
-    submitForm(formName) {
-        let vm = this
-        vm.$refs[formName].validate(valid => {
-        if (valid) {
-            vm.$api.common.getNews({ urls : vm.dynamicValidateForm.URLs.map(url => url.value)}).then(({data}) => {
-                this.$emit('news-fetched', data)
-            })
-            
-        } else {
-          console.log('error submit!!');
-          return false;
-        }
-      });
+    submit() {
+      this.$api.common.getNews(this.model).then(({data}) => {
+          this.$emit('news-fetched', data)
+      })
     },
-    resetForm(formName) {
-      this.$refs[formName].resetFields();
+    reset() {
     },
-    removeURL(item) {
-      let index = this.dynamicValidateForm.URLs.indexOf(item);
-      if (index !== -1) {
-        this.dynamicValidateForm.URLs.splice(index, 1);
-      }
-    },
-    addURL() {
-      this.dynamicValidateForm.URLs.push({
-        value: '',
-        key: Date.now(),
-      });
+    onChange(date, dateString) {
+      this.model.from = date.clone().weekday(0).format('yyyy-MM-DD')
+      this.model.to = date.clone().weekday(6).format('yyyy-MM-DD')
     },
   },
 };
@@ -101,15 +57,15 @@ export default {
     color: #777;
   }
 }
-.dynamic-delete-button[disabled] {
-  cursor: not-allowed;
-  opacity: 0.5;
-}
 /deep/ .ant-form-item-children {
   display: flex;
   .ant-input +.anticon {
     margin-left: 8px;
   }
+}
+.ant-calendar-picker, .ant-input-search{
+  margin-bottom: 10px;
+  margin-right: 10px
 }
 
 </style>

@@ -20,11 +20,9 @@ public class AnalyzedNews {
     public AnalyzedNews (FeedMessage feedMessage) {
         title = feedMessage.getTitle();
         String words;
-        if( feedMessage.getDescription() != null) {
-            words = feedMessage.getDescription();
-        } else {
+
             words = feedMessage.getTitle();
-        }
+
         for (String word : words.split(" ")) {
             termsPreparator.addTerm(word);
         }

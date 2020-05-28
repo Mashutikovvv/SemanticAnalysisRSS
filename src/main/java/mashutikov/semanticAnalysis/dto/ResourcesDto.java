@@ -6,5 +6,7 @@ import java.util.List;
 
 @Data
 public class ResourcesDto {
-    private List<String> urls;
+    private String from;
+    private String to;
+    private String q;
 }

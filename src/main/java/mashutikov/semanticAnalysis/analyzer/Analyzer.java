@@ -2,19 +2,15 @@ package mashutikov.semanticAnalysis.analyzer;
 
 import Jama.Matrix;
 import Jama.SingularValueDecomposition;
+import mashutikov.semanticAnalysis.dto.TermDto;
 import mashutikov.semanticAnalysis.model.AnalyzedNews;
 import mashutikov.semanticAnalysis.model.FeedMessage;
 import mashutikov.semanticAnalysis.model.Terms;
 import mashutikov.semanticAnalysis.model.chart.ChartPoint;
-import mashutikov.semanticAnalysis.model.chart.Charts;
-import mashutikov.semanticAnalysis.service.PorterStemmer;
-import mashutikov.semanticAnalysis.service.TermsPreparator;
-import org.springframework.beans.factory.annotation.Autowired;
+import mashutikov.semanticAnalysis.model.chart.AnalysisResult;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -23,7 +19,7 @@ public class Analyzer {
     private List<AnalyzedNews> analyzedNews = new ArrayList<>();
     private Terms commonSetTerms;
 
-    public Charts executeAnalysis(List<FeedMessage> news) {
+    public AnalysisResult executeAnalysis(List<FeedMessage> news) {
         commonSetTerms  = new Terms();
         analyzedNews = new ArrayList<>();
         for (FeedMessage item: news) {
@@ -81,8 +77,12 @@ public class Analyzer {
             }
             newsPoints.add(new ChartPoint(analyzedNews.get(i).getTitle(), v[i][0], secondPoint));
         }
-        System.out.println(analyzedNews);
-        return new Charts(newsPoints, termsPoints);
+        List<TermDto> commonTerms = new ArrayList<>();
+        for(Map.Entry<String, Integer> entry : commonSetTerms.getTerms().entrySet()) {
+            commonTerms.add( new TermDto(entry.getKey(), entry.getValue()));
+        }
+
+        return new AnalysisResult(newsPoints, termsPoints, commonTerms);
     }
 
 

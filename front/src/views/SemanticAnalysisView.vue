@@ -4,8 +4,22 @@
       <SemanticAnalisForm
         @news-fetched="newsFetched"/>    
     </a-card>
-    <a-card class="main-view-card" v-if="analysisResult">
-      <Chart :datacollection="datacollection"/>   
+    <a-card class="main-view-card" v-if="analysisResult">      
+      <a-tabs default-active-key="1" >
+        <a-tab-pane key="1" tab="График">
+          <Chart :datacollection="datacollection"/>   
+        </a-tab-pane>
+        <a-tab-pane key="2" tab="Таблица слов" force-render>
+          <a-table
+            :columns="columns"
+            :data-source="words"
+            bordered
+            size="middle"/>
+        </a-tab-pane>
+        <a-tab-pane key="3" tab="Tab 3">
+          Content of Tab Pane 3
+        </a-tab-pane>
+      </a-tabs>
     </a-card>
     <a-card class="main-view-card">
       <a-button 
@@ -25,40 +39,32 @@ export default {
   data() {
     return {      
       news: [],
-      newss: [
-        {
-          title: "Британская полиция знает о местонахождении основателя WikiLeaks"
-        },
-        {
-          title: "В суде США начинается процесс против россиянина, рассылавшего спам"
-        },
-        {
-          title: "Церемонию вручения Нобелевской премии мира бойкотируют 19 стран"
-        },
-        {
-          title: "В Великобритании арестован основатель сайта Wikileaks Джулиан Ассандж"
-        },
-        {
-          title: "Украина игнорирует церемонию вручения Нобелевской премии"
-        },
-        {
-          title: "Шведский суд отказался рассматривать апелляцию основателя Wikileaks"
-        },
-        {
-          title: "НАТО и США разработали планы обороны стран Балтии против России"
-        },
-        {
-          title: "Полиция Великобритании нашла основателя WikiLeaks, но, не арестовала"
-        },
-        {
-          title: "В Стокгольме и Осло сегодня состоится вручение Нобелевских премий"
-        },
-      ],
       datacollection: {
         datasets: []
       },
       analysisResult: null,
-    };
+      columns: [
+        {
+          title: 'Слово',
+          dataIndex: 'word',
+          sorter: (a, b) => {     
+            if(a.word > b.word) {
+              return 1
+            }
+            if(a.word < b.word) {
+              return -1
+            }
+            return 0
+          },
+        },
+        {
+          title: 'Количество',
+          dataIndex: 'count',
+          sorter: (a, b) => a.count - b.count,
+        },
+      ],
+      words:[],
+    }
   },
   methods: {   
     newsFetched(news) {
@@ -83,9 +89,9 @@ export default {
               borderWidth: 5,
               pointBorderColor: '#249EBF',
               data: data.news
-            }     
-        )
-    })
+            })
+        this.words = data.commonTerms.map( word => Object.assign(word, {key: word.word}))
+      })
     }
   },
 };
