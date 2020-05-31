@@ -47,7 +47,7 @@ public class TermsPreparator {
             "ей", "надо", "сегодня",
             "ему", "наконец", "сейчас",
             "если", "нас", "сказал",
-            "есть",	"не", "сказала"
+            "есть",	"не", "сказала",
     };
     public void addTerm(String term) {
         if(isValidWord(term.toLowerCase())){

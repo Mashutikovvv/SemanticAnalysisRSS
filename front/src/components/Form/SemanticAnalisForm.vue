@@ -10,10 +10,10 @@
           @click="submit()">
             Загрузить новости
         </a-button>
-        <a-button style="margin-left: 10px" @click="resetForm('dynamicValidateForm')">
+        <a-button style="margin-left: 10px" @click="resetForm">
             Очистить
         </a-button>
-        </a-form-model-item>
+        </a-form-model-item>     
     </a-form-model>
 </template>
 
@@ -27,16 +27,23 @@ export default {
         from: "",
         to: "",
       },      
-      weekDate: null,    
+      weekDate: null,   
+      news: null, 
     };
+    
   },
   methods: {
     submit() {
       this.$api.common.getNews(this.model).then(({data}) => {
+          this.news = data
           this.$emit('news-fetched', data)
       })
     },
-    reset() {
+    resetForm() {
+      this.model.q = ""
+      this.model.from = ""
+      this.model.to = ""
+      this.weekDate = ""
     },
     onChange(date, dateString) {
       this.model.from = date.clone().weekday(0).format('yyyy-MM-DD')
@@ -67,5 +74,4 @@ export default {
   margin-bottom: 10px;
   margin-right: 10px
 }
-
 </style>

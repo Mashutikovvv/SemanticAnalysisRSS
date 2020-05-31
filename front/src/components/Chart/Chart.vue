@@ -33,7 +33,7 @@
                     callbacks: {
                         label: ((tooltipItems, data) => {
                             let count = ""
-                            if(tooltipItems.datasetIndex === 0 ){
+                            if(tooltipItems.datasetIndex === 0 ){                                
                                 count = "Количество:" + vm.datacollection.datasets[tooltipItems.datasetIndex].data[tooltipItems.index].r
                             }
 

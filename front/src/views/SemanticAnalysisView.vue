@@ -16,19 +16,24 @@
             bordered
             size="middle"/>
         </a-tab-pane>
-        <a-tab-pane key="3" tab="Tab 3">
-          Content of Tab Pane 3
-        </a-tab-pane>
       </a-tabs>
     </a-card>
     <a-card class="main-view-card">
-      <a-button 
-          :loading="false"
-          type="primary" 
-          html-type="submit" 
-          @click="getAnalysis">
-            Анализ
-      </a-button>
+      <div class="counter-wrapper" >
+        <a-button 
+            :loading="loading"
+            type="primary" 
+            html-type="submit" 
+            @click="getAnalysis">
+              Анализ
+        </a-button>
+        <div class="counter" v-if="news.length">
+            Количество загруженных новостей:  
+            <span>
+                {{news.length || 0}}
+            </span>  
+        </div>
+      </div>
       <NewsList :news="news"/>
     </a-card>
   </div>
@@ -64,33 +69,39 @@ export default {
         },
       ],
       words:[],
-    }
+      loading: false
+    }    
   },
   methods: {   
     newsFetched(news) {
       this.news = news
+      this.analysisResult = null
     },
     getAnalysis(){
+      this.loading = true
       this.$api.common.getAnalysis({ news : this.news}).then(({data}) => {
         this.analysisResult = data
-        this.datacollection.datasets.push(
-           {
-              label: 'Слова',
-              backgroundColor: '#f87979',
-              pointBackgroundColor: 'white',
-              borderWidth: 3,
-              pointBorderColor: '#249EBF',
-              data: data.terms
-            },
+        this.datacollection.datasets = [
             {
-              label: 'Новости',
-              backgroundColor: '#7bb6ed',
-              pointBackgroundColor: 'white',
-              borderWidth: 5,
-              pointBorderColor: '#249EBF',
-              data: data.news
-            })
+                label: 'Слова',
+                backgroundColor: '#f87979',
+                pointBackgroundColor: 'white',
+                borderWidth: 3,
+                pointBorderColor: '#249EBF',
+                data: data.terms
+              },
+              {
+                label: 'Новости',
+                backgroundColor: '#7bb6ed',
+                pointBackgroundColor: 'white',
+                borderWidth: 5,
+                pointBorderColor: '#249EBF',
+                data: data.news
+              }
+            ]
         this.words = data.commonTerms.map( word => Object.assign(word, {key: word.word}))
+      }).finally(() => {
+        this.loading = false
       })
     }
   },
@@ -101,5 +112,15 @@ export default {
   .main-view-card {
     margin: 30px;
     width: 1200px;
+  }
+  .counter {
+    margin-left: 10px ;
+    span {
+      font-weight: bold;
+    }
+    &-wrapper {
+      display: flex;
+      align-items: center;
+    }
   }
 </style>
