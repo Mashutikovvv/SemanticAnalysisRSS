@@ -24,6 +24,7 @@
             :loading="loading"
             type="primary" 
             html-type="submit" 
+            :disabled="!news.length"
             @click="getAnalysis">
               Анализ
         </a-button>

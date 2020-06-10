@@ -1,10 +1,14 @@
 <template>
     <a-form-model>
-        <a-week-picker placeholder="Выберите неделю" v-model="weekDate" @change="onChange" />  
+        <a-week-picker 
+          :disabled-date="disabledDate"
+          placeholder="Выберите неделю" 
+          v-model="weekDate" 
+          @change="onChange" />  
         <a-input-search placeholder="Ключевое слово" style="width: 200px" v-model="model.q"/>  
         <a-form-model-item>
         <a-button 
-          :loading="false"
+          :loading="loading"
           type="primary" 
           html-type="submit" 
           @click="submit()">
@@ -19,6 +23,7 @@
 
 <script>
 let id = 0;
+import moment from 'moment';
 export default {
   data() {
     return {
@@ -29,14 +34,17 @@ export default {
       },      
       weekDate: null,   
       news: null, 
-    };
-    
+      loading: false,
+    };    
   },
   methods: {
     submit() {
+      this.loading = true,
       this.$api.common.getNews(this.model).then(({data}) => {
           this.news = data
           this.$emit('news-fetched', data)
+      }).finally(() => {
+        this.loading = false
       })
     },
     resetForm() {
@@ -46,8 +54,22 @@ export default {
       this.weekDate = ""
     },
     onChange(date, dateString) {
-      this.model.from = date.clone().weekday(0).format('yyyy-MM-DD')
-      this.model.to = date.clone().weekday(6).format('yyyy-MM-DD')
+      if(date) {
+        let olderDate = moment().subtract('month', 1).add('days', 1);
+        this.model.from = date.clone().weekday(0).format('yyyy-MM-DD')
+        this.model.to = date.clone().weekday(6).format('yyyy-MM-DD')
+        if ( olderDate.valueOf() > date.clone().weekday(0).valueOf()  ) {
+          this.model.from = olderDate.format('yyyy-MM-DD')
+        }
+      } else {
+        this.model.from = ""
+        this.model.to = ""
+      }
+      
+    },
+    disabledDate(value) {
+      let now = moment();
+      return now.valueOf() <= value.valueOf() || now.subtract('month', 1).valueOf() >= value.valueOf()
     },
   },
 };
